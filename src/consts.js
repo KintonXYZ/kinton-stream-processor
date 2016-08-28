@@ -1,2 +1,11 @@
 exports.DEBUG_LEVEL = (process.env.DEBUG || 'false') === 'true' ? 'debug' : 'info';
-exports.MONGO_HOST = process.env.MONGO_HOST || 'localhost';
+exports.MONGO_HOST = process.env.MONGO_HOST || 'mongodb';
+exports.MONGO_PORT = process.env.MONGO_HOST || 'mongodb';
+exports.MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'test';
+exports.RETHINK_HOST = process.env.RETHINK_HOST || 'rethinkdb';
+exports.RETHINK_PORT = process.env.RETHINK_PORT || 28015;
+exports.RETHINK_DB_NAME = process.env.RETHINK_DB_NAME || 'test';
+exports.RABBITMQ_HOST = process.env.RABBITMQ_HOST || 'rabbitmq';
+exports.RABBITMQ_PORT = process.env.RABBITMQ_PORT || 5672;
+exports.RABBITMQ_USER = process.env.RABBITMQ_USER || 'admin';
+exports.RABBITMQ_PASS = process.env.RABBITMQ_PASS || '';

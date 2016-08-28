@@ -5,14 +5,11 @@ const consts = require('./src/consts');
 const Fleet = require('./src/models/fleet');
 const Message = require('./src/models/message');
 const thinky = require('thinky')({
-  host: 'localhost',
-  port: 28015,
+  host: consts.RETHINK_HOST,
+  port: consts.RETHINK_HOST,
   authKey: '',
-  db: 'test',
+  db: consts.RETHINK_DB_NAME,
 });
-
-// const type = thinky.type;
-// const r = thinky.r;
 
 // Logger
 const logger = new (winston.Logger)({
@@ -26,10 +23,10 @@ const logger = new (winston.Logger)({
 });
 
 const connection = amqp.createConnection({
-  host: 'localhost',
-  port: 5672,
-  login: 'admin',
-  password: 'admin',
+  host: consts.RABBITMQ_HOST,
+  port: consts.RABBITMQ_PORT,
+  login: consts.RABBITMQ_USER,
+  password: consts.RABBITMQ_PASS,
   connectionTimeout: 10000,
   authMechanism: 'AMQPLAIN',
   vhost: '/',
@@ -43,6 +40,7 @@ connection.on('error', (e) => {
 
 mongoose.connection.on('connected', () => {
   logger.info('Connected to MongoDB');
+
   Fleet.find({}, (err, fleets) => {
     if (err) throw err;
 
@@ -78,15 +76,18 @@ mongoose.connection.on('connected', () => {
 connection.on('ready', () => {
   logger.info('Connected to RabbitMQ');
 
-  // Database connection
+  // Rethink connected
   thinky.dbReady().then(() => {
     logger.info('Connected to RethinkDB');
 
+    // Get notifications for new messages inserted on the database
     Message.changes().then((feed) => {
       feed.each((error, doc) => {
         if (error) throw error;
 
+        // Is a new message
         if (doc.getOldValue() == null) {
+          // Send the message to the user
           connection.publish(doc.fleet, doc.data, {
             messageId: doc.id,
             timestamp: doc.timestamp.getTime() / 1000,
@@ -100,6 +101,7 @@ connection.on('ready', () => {
       logger.error(error);
     });
 
-    mongoose.connect(`mongodb://${consts.MONGO_HOST}/test`);
+    // Connect to MongoDB
+    mongoose.connect(`mongodb://${consts.MONGO_HOST}/${consts.MONGO_DB_NAME}`);
   });
 });
