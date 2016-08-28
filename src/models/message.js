@@ -1,4 +1,4 @@
-const thinky = require('thinky')();
+const thinky = require('../thinky');
 
 const r = thinky.r;
 const type = thinky.type;

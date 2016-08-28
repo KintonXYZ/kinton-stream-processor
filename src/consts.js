@@ -1,6 +1,6 @@
 exports.DEBUG_LEVEL = (process.env.DEBUG || 'false') === 'true' ? 'debug' : 'info';
 exports.MONGO_HOST = process.env.MONGO_HOST || 'mongodb';
-exports.MONGO_PORT = process.env.MONGO_HOST || 'mongodb';
+exports.MONGO_PORT = process.env.MONGO_PORT || 27017;
 exports.MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'test';
 exports.RETHINK_HOST = process.env.RETHINK_HOST || 'rethinkdb';
 exports.RETHINK_PORT = process.env.RETHINK_PORT || 28015;

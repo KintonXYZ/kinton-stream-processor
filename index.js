@@ -4,12 +4,7 @@ const winston = require('winston');
 const consts = require('./src/consts');
 const Fleet = require('./src/models/fleet');
 const Message = require('./src/models/message');
-const thinky = require('thinky')({
-  host: consts.RETHINK_HOST,
-  port: consts.RETHINK_HOST,
-  authKey: '',
-  db: consts.RETHINK_DB_NAME,
-});
+const thinky = require('./src/thinky');
 
 // Logger
 const logger = new (winston.Logger)({
@@ -22,6 +17,7 @@ const logger = new (winston.Logger)({
   ],
 });
 
+// Connect AMQP
 const connection = amqp.createConnection({
   host: consts.RABBITMQ_HOST,
   port: consts.RABBITMQ_PORT,
@@ -101,7 +97,7 @@ connection.on('ready', () => {
       logger.error(error);
     });
 
-    // Connect to MongoDB
+    // Connect MongoDB
     mongoose.connect(`mongodb://${consts.MONGO_HOST}/${consts.MONGO_DB_NAME}`);
   });
 });
